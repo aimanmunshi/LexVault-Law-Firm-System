@@ -29,4 +29,11 @@ describe('Real API smoke tests', () => {
     const res = await request(app).get('/api/does-not-exist');
     expect(res.statusCode).toBe(404);
   });
+
+  test('HTTP request metrics are recorded', async () => {
+    await request(app).get('/health');
+    const res = await request(app).get('/metrics');
+    expect(res.text).toMatch(/lawfirm_http_requests_total\{[^}]*route="\/health"[^}]*\} \d+/);
+    expect(res.text).toContain('lawfirm_http_request_duration_seconds_bucket');
+  });
 });

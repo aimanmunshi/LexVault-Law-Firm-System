@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-const { collectDefaultMetrics, register } = require('prom-client');
+const { collectDefaultMetrics, register, Counter, Histogram } = require('prom-client');
 const logger = require('./utils/logger');
 const { errorHandler } = require('./middleware/errorHandler');
 
@@ -23,6 +23,30 @@ const PORT = process.env.PORT || 5000;
 
 // Prometheus metrics
 collectDefaultMetrics({ prefix: 'lawfirm_' });
+
+// HTTP metrics used by the Grafana dashboard and the alert rules
+const httpRequests = new Counter({
+  name: 'lawfirm_http_requests_total',
+  help: 'Total HTTP requests',
+  labelNames: ['method', 'route', 'status_code'],
+});
+const httpDuration = new Histogram({
+  name: 'lawfirm_http_request_duration_seconds',
+  help: 'HTTP request duration in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+});
+app.use((req, res, next) => {
+  const stopTimer = httpDuration.startTimer();
+  res.on('finish', () => {
+    // Use the route pattern (not the raw URL) to keep label cardinality low
+    const route = req.route ? `${req.baseUrl}${req.route.path}` : 'unmatched';
+    const labels = { method: req.method, route, status_code: res.statusCode };
+    httpRequests.inc(labels);
+    stopTimer(labels);
+  });
+  next();
+});
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));

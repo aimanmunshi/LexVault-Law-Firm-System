@@ -104,6 +104,15 @@ if [ "$e2e" != "1" ]; then
   exit 1
 fi
 
+echo "== Monitoring (Prometheus + Grafana, non-blocking) =="
+# Never fails the deploy: the app is already live at this point.
+if kubectl apply -f devops/kubernetes/monitoring/monitoring.yaml; then
+  kubectl -n monitoring rollout restart deploy/prometheus >/dev/null 2>&1 || true
+  echo "Monitoring applied. Images may still be pulling: kubectl -n monitoring get pods"
+else
+  echo "WARNING: monitoring apply failed (app deploy is unaffected)"
+fi
+
 echo "== Done =="
 echo "Live backend colour : $TARGET ($LIVE is now standby; rollback = patch the backend Service selector back)"
 kc get pods -o wide
