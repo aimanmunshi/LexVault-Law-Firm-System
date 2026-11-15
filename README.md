@@ -5,7 +5,7 @@
 
 **A production-grade full-stack web application with a complete DevOps pipeline**
 
-![GitHub last commit](https://img.shields.io/github/last-commit/Hardik144/LexVault-Law-Firm-System)
+![GitHub last commit](https://img.shields.io/github/last-commit/aimanmunshi/LexVault-Law-Firm-System)
 ![Docker](https://img.shields.io/badge/Docker-✓-blue)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-AWS%20EKS-orange)
 ![Jenkins](https://img.shields.io/badge/CI%2FCD-Jenkins-red)
@@ -69,7 +69,7 @@ Every git push to the `main` branch triggers the full pipeline automatically:
 │     ├── Stage 3: Run Tests             (Jest — 8 test cases)        │
 │     ├── Stage 4: Security Audit        (npm audit — parallel)       │
 │     ├── Stage 5: Build Docker Images   (linux/amd64 — buildx)       │
-│     ├── Stage 6: Push to Docker Hub    (hardik144/lawfirm-*)        │
+│     ├── Stage 6: Push to Docker Hub    (aimanmunshi/lawfirm-*)        │
 │     ├── Stage 7: Deploy to AWS EKS     (kubectl apply)              │
 │     ├── Stage 8: Blue-Green Switch     (traffic switching)          │
 │     └── Stage 9: Health Check         (kubectl get pods)            │
@@ -157,7 +157,7 @@ Every git push to the `main` branch triggers the full pipeline automatically:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Hardik144/LexVault-Law-Firm-System.git
+git clone https://github.com/aimanmunshi/LexVault-Law-Firm-System.git
 cd LexVault-Law-Firm-System
 ```
 
@@ -351,7 +351,7 @@ kubectl get svc backend-live -n lawfirm \
 ```bash
 # Deploy broken image → pods show ImagePullBackOff (RED)
 kubectl set image deployment/lawfirm-backend-green \
-  backend=hardik144/lawfirm-backend:broken-999 -n lawfirm
+  backend=aimanmunshi/lawfirm-backend:broken-999 -n lawfirm
 
 # Instantly switch traffic away from broken version
 kubectl patch svc backend-live -n lawfirm \
@@ -359,7 +359,7 @@ kubectl patch svc backend-live -n lawfirm \
 
 # Fix the broken deployment
 kubectl set image deployment/lawfirm-backend-green \
-  backend=hardik144/lawfirm-backend:latest -n lawfirm
+  backend=aimanmunshi/lawfirm-backend:latest -n lawfirm
 ```
 
 ---

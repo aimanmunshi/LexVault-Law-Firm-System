@@ -13,7 +13,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DOCKERHUB_USER="hardik144"
+DOCKERHUB_USER="aimanmunshi"
 
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════╗${NC}"

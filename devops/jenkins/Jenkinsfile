@@ -22,7 +22,7 @@ pipeline {
             steps {
                 cleanWs()
                 git branch: 'main',
-                    url: 'https://github.com/Hardik144/LexVault-Law-Firm-System.git'
+                    url: 'https://github.com/aimanmunshi/LexVault-Law-Firm-System.git'
                 sh 'git log --oneline -5'
                 echo "✅ Code checked out — Build #${BUILD_NUMBER}"
             }

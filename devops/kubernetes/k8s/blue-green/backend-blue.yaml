@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: hardik144/lawfirm-backend:latest
+          image: aimanmunshi/lawfirm-backend:latest
           ports:
             - containerPort: 5000
           env:

@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: hardik144/lawfirm-frontend:latest
+          image: aimanmunshi/lawfirm-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
