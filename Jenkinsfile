@@ -28,7 +28,7 @@ pipeline {
         stage('Backend: install & test') {
             steps {
                 dir('backend') {
-                    sh 'npm ci'
+                    sh 'npm ci --ignore-scripts --fetch-retries=5'
                     // A failing test fails the build.
                     sh 'npm test'
                 }
