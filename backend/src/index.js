@@ -72,9 +72,13 @@ app.use('*', (req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  logger.info(`Law Firm Backend running on port ${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV}`);
-});
+// Only start the HTTP server when run directly (node src/index.js),
+// so tests can import the app without opening a port.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    logger.info(`Law Firm Backend running on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV}`);
+  });
+}
 
 module.exports = app;

@@ -1,22 +1,32 @@
 const request = require('supertest');
 
-// Simple test that does not need database
-const express = require('express');
-const app = express();
+// Use the real Express app, with the database client mocked out
+// (these routes never reach the database, so no Postgres is needed).
+jest.mock('../prisma/client', () => ({}));
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
+const app = require('../index');
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'law-firm-backend' });
-});
-
-describe('Health Check API', () => {
+describe('Real API smoke tests', () => {
   test('GET /health returns 200 with status ok', async () => {
-    const response = await request(app).get('/health');
-    expect(response.statusCode).toBe(200);
-    expect(response.body.status).toBe('ok');
+    const res = await request(app).get('/health');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(res.body.service).toBe('law-firm-backend');
   });
 
-  test('GET /health returns service name', async () => {
-    const response = await request(app).get('/health');
-    expect(response.body.service).toBe('law-firm-backend');
+  test('GET /metrics exposes Prometheus metrics', async () => {
+    const res = await request(app).get('/metrics');
+    expect(res.statusCode).toBe(200);
+    expect(res.text).toContain('lawfirm_');
+  });
+
+  test('Protected route rejects requests without a token', async () => {
+    const res = await request(app).get('/api/cases');
+    expect(res.statusCode).toBe(401);
+  });
+
+  test('Unknown route returns 404', async () => {
+    const res = await request(app).get('/api/does-not-exist');
+    expect(res.statusCode).toBe(404);
   });
 });

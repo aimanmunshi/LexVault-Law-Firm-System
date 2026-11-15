@@ -1,0 +1,20 @@
+# The "backend" Service is the blue-green switch: its selector decides which
+# colour receives traffic (the frontend's nginx proxies to backend:5000).
+# deploy.sh creates this only if it does not exist yet, and patches the
+# selector on every release - never re-apply this file by hand on a live cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: lawfirm
+  labels:
+    app: lawfirm-backend
+spec:
+  selector:
+    app: lawfirm-backend
+    version: blue
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP

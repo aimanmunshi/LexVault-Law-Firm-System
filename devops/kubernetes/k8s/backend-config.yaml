@@ -1,0 +1,25 @@
+# Backend configuration shared by the blue and green deployments.
+# NOTE: demo credentials only - rotate them for anything beyond a local demo.
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: lawfirm
+type: Opaque
+stringData:
+  DATABASE_URL: "postgresql://lawfirm:lawfirm123@postgres:5432/lawfirmdb"
+  JWT_SECRET: "super-secret-jwt-key-change-in-production-32chars"
+---
+# Uploaded documents (shared by blue and green)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads-pvc
+  namespace: lawfirm
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

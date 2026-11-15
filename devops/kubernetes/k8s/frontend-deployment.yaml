@@ -1,5 +1,5 @@
----
-# Frontend Deployment
+# Frontend (nginx serving the React build, proxying /api to the "backend" Service).
+# IMAGE_PLACEHOLDER is replaced by deploy.sh with the build's image tag.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,7 +7,6 @@ metadata:
   namespace: lawfirm
   labels:
     app: lawfirm-frontend
-    version: "latest"
 spec:
   replicas: 2
   selector:
@@ -22,31 +21,49 @@ spec:
     metadata:
       labels:
         app: lawfirm-frontend
-        version: "latest"
     spec:
       containers:
         - name: frontend
-          image: aimanmunshi/lawfirm-frontend:latest
-          imagePullPolicy: Always
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
               name: http
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
+              memory: 64Mi
+              cpu: 50m
             limits:
-              memory: "128Mi"
-              cpu: "200m"
+              memory: 128Mi
+              cpu: 200m
           readinessProbe:
             httpGet:
               path: /health
               port: 80
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /health
               port: 80
-            initialDelaySeconds: 20
+            initialDelaySeconds: 15
             periodSeconds: 15
+---
+# Single entry point. On kind, nodePort 30080 is mapped to http://localhost:30080
+# (see kind-config.yaml). On a cloud cluster change type to LoadBalancer.
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: lawfirm
+  labels:
+    app: lawfirm-frontend
+spec:
+  selector:
+    app: lawfirm-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort
