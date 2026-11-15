@@ -70,10 +70,10 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 sh 'echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin'
-                sh 'docker push $IMAGE_BACKEND:$IMAGE_TAG'
-                sh 'docker push $IMAGE_BACKEND:latest'
-                sh 'docker push $IMAGE_FRONTEND:$IMAGE_TAG'
-                sh 'docker push $IMAGE_FRONTEND:latest'
+                sh 'for i in 1 2 3 4 5 6; do docker push $IMAGE_BACKEND:$IMAGE_TAG && break; echo "push retry $i"; sleep 10; done; docker push $IMAGE_BACKEND:$IMAGE_TAG'
+                sh 'for i in 1 2 3 4 5 6; do docker push $IMAGE_BACKEND:latest && break; echo "push retry $i"; sleep 10; done; docker push $IMAGE_BACKEND:latest'
+                sh 'for i in 1 2 3 4 5 6; do docker push $IMAGE_FRONTEND:$IMAGE_TAG && break; echo "push retry $i"; sleep 10; done; docker push $IMAGE_FRONTEND:$IMAGE_TAG'
+                sh 'for i in 1 2 3 4 5 6; do docker push $IMAGE_FRONTEND:latest && break; echo "push retry $i"; sleep 10; done; docker push $IMAGE_FRONTEND:latest'
             }
             post {
                 always { sh 'docker logout || true' }
