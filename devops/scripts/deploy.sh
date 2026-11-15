@@ -89,7 +89,7 @@ fi
 echo "== End-to-end check (frontend pod -> backend Service) =="
 e2e=0
 for i in 1 2 3 4 5; do
-  if kc exec deploy/lawfirm-frontend -- wget -qO- http://localhost/health >/dev/null \
+  if kc exec deploy/lawfirm-frontend -- wget -qO- http://127.0.0.1/health >/dev/null \
      && kc exec deploy/lawfirm-frontend -- wget -qO- http://backend:5000/health; then
     e2e=1; echo; break
   fi
