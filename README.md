@@ -562,3 +562,5 @@ This project was created for academic purposes at SRM Institute of Science and T
 `Docker` • `Jenkins` • `Kubernetes` • `AWS EKS` • `Prometheus` • `Grafana`
 
 </div>
+
+_Deployed by the LexVault CI/CD pipeline (Jenkins, Docker Hub, Kubernetes)._
