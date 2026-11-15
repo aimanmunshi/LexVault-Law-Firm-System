@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl wget && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm install --only=production
+RUN for i in 1 2 3 4; do rm -rf node_modules; timeout 480 npm install --omit=dev && exit 0; echo "npm install attempt $i failed, retrying..."; sleep 5; done; exit 1
 
 COPY . .
 RUN npx prisma generate
